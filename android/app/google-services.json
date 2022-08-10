@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "124602948589",
+    "firebase_url": "https://uber-indriver-app-default-rtdb.firebaseio.com",
+    "project_id": "uber-indriver-app",
+    "storage_bucket": "uber-indriver-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:124602948589:android:485c34d04a57289b37e5e4",
+        "android_client_info": {
+          "package_name": "com.portfolio.driversapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "124602948589-3t63864866aq12akukp6ec3566noilai.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC0BIo10KL6XYEnqiNDSj0U6qLSOH53BjQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "124602948589-3t63864866aq12akukp6ec3566noilai.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
