@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:drivers_app/authentication/signup_screen.dart';
+import 'package:drivers_app/authentication/login_screen.dart';
 import 'package:drivers_app/globals.dart';
 import 'package:drivers_app/home/home_screen.dart';
 import 'package:flutter/material.dart';
