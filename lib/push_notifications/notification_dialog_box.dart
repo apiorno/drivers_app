@@ -1,7 +1,9 @@
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:drivers_app/globals.dart';
 import 'package:drivers_app/models/user_ride_request_information.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class NotificationDialogBox extends StatefulWidget {
   final UserRideRequestInformation userRideRequestInfo;
@@ -135,7 +137,7 @@ class _NotificationDialogBoxState extends State<NotificationDialogBox> {
                         assetsAudioPlayer.pause();
                         assetsAudioPlayer.stop();
                         assetsAudioPlayer = AssetsAudioPlayer();
-                        Navigator.pop(context);
+                        acceptRideRequest(context);
                       },
                       child: const Text(
                         'ACCEPT',
@@ -148,5 +150,22 @@ class _NotificationDialogBoxState extends State<NotificationDialogBox> {
         ),
       ),
     );
+  }
+
+  void acceptRideRequest(BuildContext context) {
+    final newRideStatusRef = FirebaseDatabase.instance
+        .ref()
+        .child('driver')
+        .child(currentFirebaseUser!.uid)
+        .child('newRideStatus');
+    newRideStatusRef.once().then((snap) {
+      final value = snap.snapshot.value;
+      if (value == null) {
+        Fluttertoast.showToast(msg: 'This ride request does not exist');
+      }
+      if (value == widget.userRideRequestInfo.rideRequestId) {
+        newRideStatusRef.set('accepted');
+      }
+    });
   }
 }

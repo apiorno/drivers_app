@@ -8,7 +8,7 @@ class UserRideRequestInformation {
   String originAddress;
 
   String destinationAddress;
-
+  String rideRequestId;
   String userName;
 
   String userPhone;
@@ -18,10 +18,12 @@ class UserRideRequestInformation {
       this.destinationLatLang,
       this.originAddress,
       this.destinationAddress,
+      this.rideRequestId,
       this.userName,
       this.userPhone);
 
-  factory UserRideRequestInformation.fromMap(Map<String, dynamic> map) {
+  factory UserRideRequestInformation.fromMap(Map<String, dynamic> map,
+      {required String id}) {
     final originLat = double.parse(map['origin']['latitude']);
     final originLong = double.parse(map['origin']['longitude']);
 
@@ -33,6 +35,7 @@ class UserRideRequestInformation {
         LatLng(destinationLat, destinationLong),
         map['originAddress'],
         map['destinationAddress'],
+        id,
         map['userName'],
         map['userPhone']);
   }

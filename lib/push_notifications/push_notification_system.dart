@@ -48,7 +48,8 @@ class PushNotificationsSystem {
       assetsAudioPlayer.play();
       final snapVal = snapData.snapshot.value as Map<String, dynamic>;
 
-      final userRideRequestInfo = UserRideRequestInformation.fromMap(snapVal);
+      final userRideRequestInfo = UserRideRequestInformation.fromMap(snapVal,
+          id: snapData.snapshot.key);
       showDialog(
           context: context,
           builder: (context) =>
