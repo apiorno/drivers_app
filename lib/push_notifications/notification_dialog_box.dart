@@ -1,5 +1,6 @@
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:drivers_app/globals.dart';
+import 'package:drivers_app/mainScreens/trip_screen.dart';
 import 'package:drivers_app/models/user_ride_request_information.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -162,9 +163,11 @@ class _NotificationDialogBoxState extends State<NotificationDialogBox> {
       final value = snap.snapshot.value;
       if (value == null) {
         Fluttertoast.showToast(msg: 'This ride request does not exist');
+        return;
       }
       if (value == widget.userRideRequestInfo.rideRequestId) {
         newRideStatusRef.set('accepted');
+        Navigator.push(context, MaterialPageRoute(builder: (context)=> TripScreen(userRideRequestInfo: widget.userRideRequestInfo)));
       }
     });
   }
