@@ -11,3 +11,4 @@ String mapKey = 'MyApiKey';
 AppUser? currentUser;
 late StreamSubscription<Position> positionSubscription;
 AssetsAudioPlayer assetsAudioPlayer = AssetsAudioPlayer();
+Position? driverCurrentPosition;
