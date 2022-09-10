@@ -5,6 +5,7 @@ import 'package:drivers_app/mainScreens/trip_screen.dart';
 import 'package:drivers_app/models/user_ride_request_information.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class NotificationDialogBox extends StatefulWidget {
@@ -123,7 +124,27 @@ class _NotificationDialogBoxState extends State<NotificationDialogBox> {
                         assetsAudioPlayer.pause();
                         assetsAudioPlayer.stop();
                         assetsAudioPlayer = AssetsAudioPlayer();
-                        Navigator.pop(context);
+
+                        FirebaseDatabase.instance
+                            .ref()
+                            .child(widget.userRideRequestInfo.rideRequestId)
+                            .remove()
+                            .then((value) {
+                          final driverReference = FirebaseDatabase.instance
+                              .ref()
+                              .child('drivers')
+                              .child(currentFirebaseUser!.uid);
+                          Future.wait([
+                            driverReference.child('newRideStatus').set('idle'),
+                            driverReference
+                                .child('tripHistory')
+                                .child(widget.userRideRequestInfo.rideRequestId)
+                                .remove()
+                          ]).then((value) => Fluttertoast.showToast(
+                              msg: 'Ride request has been cancelled'));
+                        });
+                        Future.delayed(Duration(milliseconds: 2000),
+                            () => SystemNavigator.pop());
                       },
                       child: const Text(
                         'CANCEL',
@@ -135,7 +156,6 @@ class _NotificationDialogBoxState extends State<NotificationDialogBox> {
                   ElevatedButton(
                       style: ElevatedButton.styleFrom(primary: Colors.green),
                       onPressed: () {
-                        //Cancel request
                         assetsAudioPlayer.pause();
                         assetsAudioPlayer.stop();
                         assetsAudioPlayer = AssetsAudioPlayer();
