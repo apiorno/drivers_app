@@ -5,6 +5,7 @@ import 'package:drivers_app/helpers/black_theme_map.dart';
 import 'package:drivers_app/helpers/repository_helper.dart';
 import 'package:drivers_app/info_handler/app_info.dart';
 import 'package:drivers_app/models/user_ride_request_information.dart';
+import 'package:drivers_app/widgets/fare_amount_collection_dialog.dart';
 import 'package:drivers_app/widgets/progress_dialog.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -276,6 +277,25 @@ class _TripScreenState extends State<TripScreen> {
         .set('ended');
     driverLiverPositionSubscription.cancel();
     Navigator.pop(context);
+    showDialog(
+        context: context,
+        builder: (context) =>
+            FareAmountCollectionDialog(totalFareAmount: totalFareAmount));
+
+    saveFareAmountToDriverEarnings(totalFareAmount);
+  }
+
+  void saveFareAmountToDriverEarnings(double totalFareAmount) {
+    final earningsRef = FirebaseDatabase.instance
+        .ref()
+        .child('drivers')
+        .child(currentFirebaseUser!.uid)
+        .child('earning');
+    earningsRef.once().then((snap) => snap.snapshot.value != null
+        ? earningsRef.set(
+            (double.parse(snap.snapshot.value.toString()) + totalFareAmount)
+                .toString())
+        : earningsRef.set(totalFareAmount.toString()));
   }
 
   @override
