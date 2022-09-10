@@ -1,5 +1,6 @@
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:drivers_app/globals.dart';
+import 'package:drivers_app/helpers/repository_helper.dart';
 import 'package:drivers_app/mainScreens/trip_screen.dart';
 import 'package:drivers_app/models/user_ride_request_information.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -167,7 +168,12 @@ class _NotificationDialogBoxState extends State<NotificationDialogBox> {
       }
       if (value == widget.userRideRequestInfo.rideRequestId) {
         newRideStatusRef.set('accepted');
-        Navigator.push(context, MaterialPageRoute(builder: (context)=> TripScreen(userRideRequestInfo: widget.userRideRequestInfo)));
+        RepositoryHelper.pauseLiveLocationUpdate();
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => TripScreen(
+                    userRideRequestInfo: widget.userRideRequestInfo)));
       }
     });
   }

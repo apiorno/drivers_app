@@ -6,8 +6,11 @@ import 'package:drivers_app/helpers/repository_helper.dart';
 import 'package:drivers_app/info_handler/app_info.dart';
 import 'package:drivers_app/models/user_ride_request_information.dart';
 import 'package:drivers_app/widgets/progress_dialog.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -36,7 +39,9 @@ class _TripScreenState extends State<TripScreen> {
   final polylineCoordinates = <LatLng>[];
   final polylinePoints = PolylinePoints();
   double mapPadding = 0;
-
+  late BitmapDescriptor iconMarker;
+  final geolocator = Geolocator();
+  late Position onlineDriverPosition;
 //Step1 : Driver accepts user ride request
 // originLatLng = driver location
 // destinationLatLng = user pickup location
@@ -135,6 +140,74 @@ class _TripScreenState extends State<TripScreen> {
     });
   }
 
+  void saveAssignedDriverDetailsToUserRideRequest() {
+    final databaseReference = FirebaseDatabase.instance
+        .ref()
+        .child('rideRequests')
+        .child(widget.userRideRequestInfo.rideRequestId);
+    final driverLocation = {
+      'latitude': driverCurrentPosition!.latitude.toString(),
+      'longitude': driverCurrentPosition!.longitude.toString(),
+    };
+    databaseReference.child('driverLocation').set(driverLocation);
+    databaseReference.child('status').set('accepted');
+    databaseReference.child('driveriD').set(onlineDriverData.id);
+    databaseReference.child('driverName').set(onlineDriverData.name);
+    databaseReference.child('driverPhone').set(onlineDriverData.phone);
+    databaseReference
+        .child('car_details')
+        .set('${onlineDriverData.carColor}${onlineDriverData.carNumber}');
+    saveRideRequestIdToDriverHistory();
+  }
+
+  void saveRideRequestIdToDriverHistory() {
+    DatabaseReference tripsHistoryRef = FirebaseDatabase.instance
+        .ref()
+        .child('drivers')
+        .child(currentFirebaseUser!.uid)
+        .child('tripsHistory');
+
+    tripsHistoryRef.child(widget.userRideRequestInfo.rideRequestId).set(true);
+  }
+
+  Future<void> initializeActivDriversIconMarker() async {
+    final imageConfiguration =
+        createLocalImageConfiguration(context, size: const Size(2, 2));
+    iconMarker = await BitmapDescriptor.fromAssetImage(
+        imageConfiguration, 'images/car.png');
+  }
+
+  void getDriversLocationUpdatesAtRealTime() {
+    driverLiverPositionSubscription =
+        Geolocator.getPositionStream().listen((Position newPosition) {
+      driverCurrentPosition = newPosition;
+      onlineDriverPosition = newPosition;
+    });
+
+    final latLngLiveDriverposition =
+        LatLng(onlineDriverPosition.latitude, onlineDriverPosition.longitude);
+    final animationMarker = Marker(
+        markerId: MarkerId('AnimatedMarker'),
+        position: latLngLiveDriverposition,
+        icon: iconMarker,
+        infoWindow: const InfoWindow(title: 'This is your Position'));
+    setState(() {
+      final cameraPosition =
+          CameraPosition(target: latLngLiveDriverposition, zoom: 16);
+      newGoogleMapController!
+          .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+      markers
+          .removeWhere((element) => element.markerId.value == 'AnimatedMarker');
+      markers.add(animationMarker);
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    saveAssignedDriverDetailsToUserRideRequest();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -161,6 +234,7 @@ class _TripScreenState extends State<TripScreen> {
               var userPickupLatlang = widget.userRideRequestInfo.originLatLang;
               _drawPolylineFromOriginToDestination(
                   driverLatLngPosition, userPickupLatlang);
+              getDriversLocationUpdatesAtRealTime();
             },
           ),
           Positioned(

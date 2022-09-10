@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:drivers_app/globals.dart';
 import 'package:drivers_app/helpers/black_theme_map.dart';
 import 'package:drivers_app/helpers/repository_helper.dart';
+import 'package:drivers_app/models/driver_data.dart';
 import 'package:drivers_app/push_notifications/push_notification_system.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -75,8 +76,6 @@ class _HomeTabPageState extends State<HomeTabPage> {
         LatLng(userCurrentPosition!.latitude, userCurrentPosition!.longitude)));
   }
 
-  
-
   void checkIfPermissionAllowed() async {
     _locationPermission = await Geolocator.requestPermission();
     if (_locationPermission == LocationPermission.denied) {
@@ -99,6 +98,17 @@ class _HomeTabPageState extends State<HomeTabPage> {
 
   readCUrrentDriverInformation() async {
     currentFirebaseUser = firebaseAuth.currentUser;
+
+    FirebaseDatabase.instance
+        .ref()
+        .child('drivers')
+        .child(currentFirebaseUser!.uid)
+        .once()
+        .then((snap) {
+      if (snap.snapshot.value == null) return;
+      final value = snap.snapshot.value as Map<String, dynamic>;
+      onlineDriverData = DriverData.fromMap(value);
+    });
     final pushNotificationsSystem = PushNotificationsSystem();
     pushNotificationsSystem.initializeCloudMessaging(context);
     pushNotificationsSystem.generateAndGetToken();

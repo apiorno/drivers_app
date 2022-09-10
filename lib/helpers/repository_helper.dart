@@ -6,6 +6,7 @@ import 'package:drivers_app/models/direction_details_info.dart';
 import 'package:drivers_app/models/directions_address.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
@@ -51,5 +52,16 @@ class RepositoryHelper {
         'https://maps.googleapis.com/maps/api/directions/json?origin=${origin.latitude},${origin.longitude}&destination=${destination.latitude},${destination.longitude}&key=$mapKey');
 
     return DirectionDetailsInfo.fromJson(response['routes'][0]);
+  }
+
+  static pauseLiveLocationUpdate() {
+    positionSubscription.pause();
+    Geofire.removeLocation(currentFirebaseUser!.uid);
+  }
+
+  static resumeLiveLocationUpdate() {
+    positionSubscription.resume();
+    Geofire.setLocation(currentFirebaseUser!.uid,
+        driverCurrentPosition!.latitude, driverCurrentPosition!.longitude);
   }
 }
