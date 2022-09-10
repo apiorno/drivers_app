@@ -108,6 +108,7 @@ class _HomeTabPageState extends State<HomeTabPage> {
       if (snap.snapshot.value == null) return;
       final value = snap.snapshot.value as Map<String, dynamic>;
       onlineDriverData = DriverData.fromMap(value);
+      driverVehiculeType = value['carDetails']['type'];
     });
     final pushNotificationsSystem = PushNotificationsSystem();
     pushNotificationsSystem.initializeCloudMessaging(context);

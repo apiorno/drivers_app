@@ -42,6 +42,10 @@ class _TripScreenState extends State<TripScreen> {
   late BitmapDescriptor iconMarker;
   final geolocator = Geolocator();
   late Position onlineDriverPosition;
+  String rideRequestStatus = 'accepted';
+  late String durationFromOriginToDestination;
+  bool isRequestDirectionDetails = false;
+
 //Step1 : Driver accepts user ride request
 // originLatLng = driver location
 // destinationLatLng = user pickup location
@@ -178,6 +182,7 @@ class _TripScreenState extends State<TripScreen> {
   }
 
   void getDriversLocationUpdatesAtRealTime() {
+    late LatLng oldLatLng;
     driverLiverPositionSubscription =
         Geolocator.getPositionStream().listen((Position newPosition) {
       driverCurrentPosition = newPosition;
@@ -200,6 +205,77 @@ class _TripScreenState extends State<TripScreen> {
           .removeWhere((element) => element.markerId.value == 'AnimatedMarker');
       markers.add(animationMarker);
     });
+    oldLatLng = latLngLiveDriverposition;
+    updateDurationTimeAtRealTime();
+
+    final driverLatLngDataMap = {
+      'latitude': onlineDriverPosition.latitude,
+      'longitude': onlineDriverPosition.longitude,
+    };
+    FirebaseDatabase.instance
+        .ref()
+        .child('rideRequests')
+        .child(widget.userRideRequestInfo.rideRequestId)
+        .child('driverLocation')
+        .set(driverLatLngDataMap);
+  }
+
+  Future<void> updateDurationTimeAtRealTime() async {
+    if (!isRequestDirectionDetails) {
+      isRequestDirectionDetails = true;
+      final originLatLng = LatLng(
+        onlineDriverPosition.latitude,
+        onlineDriverPosition.longitude,
+      );
+      late LatLng destinationLatLng;
+      if (rideRequestStatus == 'accepted') {
+        destinationLatLng = widget.userRideRequestInfo.originLatLang;
+      } else {
+        destinationLatLng = widget.userRideRequestInfo.destinationLatLang;
+      }
+      final directionInformation =
+          await RepositoryHelper.obtainOriginToDestinationDirectionDetails(
+              originLatLng, destinationLatLng);
+
+      setState(() {
+        durationFromOriginToDestination = directionInformation.durationText!;
+      });
+      isRequestDirectionDetails = false;
+    }
+  }
+
+  Future<void> endTrip() async {
+    showDialog(
+        context: context,
+        builder: (context) => ProgressDialog(
+              message: 'Please Wait...',
+            ));
+    final currentDriverpositionLatLng =
+        LatLng(onlineDriverPosition.latitude, onlineDriverPosition.longitude);
+    final tripDirectionDetails =
+        await RepositoryHelper.obtainOriginToDestinationDirectionDetails(
+            currentDriverpositionLatLng,
+            widget.userRideRequestInfo.originLatLang);
+
+    final totalFareAmount =
+        RepositoryHelper.calculateFareAmountFromOriginToDestination(
+            tripDirectionDetails);
+
+    FirebaseDatabase.instance
+        .ref()
+        .child('rideRequests')
+        .child(widget.userRideRequestInfo.rideRequestId)
+        .child('fareAmount')
+        .set(totalFareAmount.toString());
+
+    FirebaseDatabase.instance
+        .ref()
+        .child('rideRequests')
+        .child(widget.userRideRequestInfo.rideRequestId)
+        .child('status')
+        .set('ended');
+    driverLiverPositionSubscription.cancel();
+    Navigator.pop(context);
   }
 
   @override
@@ -256,7 +332,7 @@ class _TripScreenState extends State<TripScreen> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 25, vertical: 20),
                 child: Column(children: [
-                  Text('18 mins',
+                  Text(durationFromOriginToDestination,
                       style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -349,7 +425,48 @@ class _TripScreenState extends State<TripScreen> {
                     height: 10,
                   ),
                   ElevatedButton.icon(
-                      onPressed: () {},
+                      onPressed: () async {
+                        if (rideRequestStatus == 'accepted') {
+                          rideRequestStatus = 'arrived';
+                          FirebaseDatabase.instance
+                              .ref()
+                              .child('rideRequests')
+                              .child(widget.userRideRequestInfo.rideRequestId)
+                              .child('status')
+                              .set(rideRequestStatus);
+
+                          setState(() {
+                            buttonTitle = 'Let`s Go';
+                            buttonColor = Colors.lightGreen;
+                          });
+
+                          showDialog(
+                              context: context,
+                              barrierDismissible: false,
+                              builder: (context) => ProgressDialog(
+                                    message: 'Loading...',
+                                  ));
+                          await _drawPolylineFromOriginToDestination(
+                              widget.userRideRequestInfo.originLatLang,
+                              widget.userRideRequestInfo.destinationLatLang);
+                          Navigator.pop(context);
+                        } else if (rideRequestStatus == 'arrived') {
+                          rideRequestStatus = 'ontrip';
+                          FirebaseDatabase.instance
+                              .ref()
+                              .child('rideRequests')
+                              .child(widget.userRideRequestInfo.rideRequestId)
+                              .child('status')
+                              .set(rideRequestStatus);
+
+                          setState(() {
+                            buttonTitle = 'End Trip';
+                            buttonColor = Colors.redAccent;
+                          });
+                        } else if (rideRequestStatus == 'ontrip') {
+                          endTrip();
+                        }
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: buttonColor,
                       ),

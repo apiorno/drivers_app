@@ -15,3 +15,4 @@ late StreamSubscription<Position> driverLiverPositionSubscription;
 AssetsAudioPlayer assetsAudioPlayer = AssetsAudioPlayer();
 Position? driverCurrentPosition;
 late DriverData onlineDriverData;
+late String driverVehiculeType;

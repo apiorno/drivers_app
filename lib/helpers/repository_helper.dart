@@ -64,4 +64,24 @@ class RepositoryHelper {
     Geofire.setLocation(currentFirebaseUser!.uid,
         driverCurrentPosition!.latitude, driverCurrentPosition!.longitude);
   }
+
+  static double calculateFareAmountFromOriginToDestination(
+      DirectionDetailsInfo? directionDetailsInfo) {
+    if (directionDetailsInfo == null) return 0;
+    double timeTraveledFarePerMinute =
+        (directionDetailsInfo.durationValue! / 60) * 0.1;
+    double distanceTraveledFarePerKilometer =
+        (directionDetailsInfo.durationValue! / 1000) * 0.1;
+    final totalFareAmount = double.parse(
+        (timeTraveledFarePerMinute + distanceTraveledFarePerKilometer)
+            .toStringAsFixed(1));
+    if (driverVehiculeType == 'byke') {
+      return totalFareAmount.truncate() / 2.0;
+    } else if (driverVehiculeType == 'uber-go') {
+      return totalFareAmount.truncate().toDouble();
+    } else if (driverVehiculeType == 'uber-x') {
+      return totalFareAmount.truncate() * 2.0;
+    }
+    return totalFareAmount.truncate().toDouble();
+  }
 }
