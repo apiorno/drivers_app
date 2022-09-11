@@ -176,7 +176,7 @@ class _HomeTabPageState extends State<HomeTabPage> {
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                      primary: statusColor,
+                      backgroundColor: statusColor,
                       padding: const EdgeInsets.symmetric(horizontal: 18),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(26))),

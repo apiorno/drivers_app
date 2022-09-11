@@ -129,7 +129,8 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             ElevatedButton(
               onPressed: validateForm,
-              style: ElevatedButton.styleFrom(primary: Colors.lightGreenAccent),
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.lightGreenAccent),
               child: const Text(
                 'Login',
                 style: TextStyle(color: Colors.black54, fontSize: 18),

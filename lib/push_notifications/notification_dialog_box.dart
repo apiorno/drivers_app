@@ -118,7 +118,8 @@ class _NotificationDialogBoxState extends State<NotificationDialogBox> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   ElevatedButton(
-                      style: ElevatedButton.styleFrom(primary: Colors.red),
+                      style:
+                          ElevatedButton.styleFrom(backgroundColor: Colors.red),
                       onPressed: () {
                         //Cancel request
                         assetsAudioPlayer.pause();
@@ -154,7 +155,8 @@ class _NotificationDialogBoxState extends State<NotificationDialogBox> {
                     width: 25,
                   ),
                   ElevatedButton(
-                      style: ElevatedButton.styleFrom(primary: Colors.green),
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green),
                       onPressed: () {
                         assetsAudioPlayer.pause();
                         assetsAudioPlayer.stop();

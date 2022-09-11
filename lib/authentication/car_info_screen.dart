@@ -155,8 +155,8 @@ class _CarInfoScreenState extends State<CarInfoScreen> {
             ),
             ElevatedButton(
                 onPressed: validateForm,
-                style:
-                    ElevatedButton.styleFrom(primary: Colors.lightGreenAccent),
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.lightGreenAccent),
                 child: const Text(
                   'Save',
                   style: TextStyle(color: Colors.black54, fontSize: 18),

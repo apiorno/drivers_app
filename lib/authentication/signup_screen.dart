@@ -180,7 +180,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ElevatedButton(
                   onPressed: validateForm,
                   style: ElevatedButton.styleFrom(
-                      primary: Colors.lightGreenAccent),
+                      backgroundColor: Colors.lightGreenAccent),
                   child: const Text(
                     'Create Account',
                     style: TextStyle(color: Colors.black54, fontSize: 18),
