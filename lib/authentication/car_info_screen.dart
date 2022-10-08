@@ -1,56 +1,43 @@
-import 'package:drivers_app/globals.dart';
-import 'package:drivers_app/splash/splash_screen.dart';
+import 'package:drivers_app/global/global.dart';
+import 'package:drivers_app/splashScreen/splash_screen.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-class CarInfoScreen extends StatefulWidget {
-  const CarInfoScreen({Key? key}) : super(key: key);
+class CarInfoScreen extends StatefulWidget
+{
 
   @override
-  State<CarInfoScreen> createState() => _CarInfoScreenState();
+  _CarInfoScreenState createState() => _CarInfoScreenState();
 }
 
-class _CarInfoScreenState extends State<CarInfoScreen> {
-  final carModelController = TextEditingController();
-  final carNumberController = TextEditingController();
-  final carColorController = TextEditingController();
-  final List<String> carTypes = ['Uber-X', 'Uber-Go', 'Bike'];
+
+
+class _CarInfoScreenState extends State<CarInfoScreen>
+{
+  TextEditingController carModelTextEditingController = TextEditingController();
+  TextEditingController carNumberTextEditingController = TextEditingController();
+  TextEditingController carColorTextEditingController = TextEditingController();
+
+  List<String> carTypesList = ["uber-x", "uber-go", "bike"];
   String? selectedCarType;
 
-  void validateForm() {
-    String? textToShow;
-    if (carColorController.text.isEmpty) {
-      textToShow = 'Car color is mandatory';
-    } else if (carNumberController.text.isEmpty) {
-      textToShow = 'Car number is mandatory';
-    } else if (carModelController.text.isEmpty) {
-      textToShow = 'Car model is mandatory';
-    } else if (selectedCarType == null) {
-      textToShow = 'Car type is mandatory';
-    }
 
-    (textToShow != null)
-        ? Fluttertoast.showToast(msg: textToShow, textColor: Colors.redAccent)
-        : saveCarInfo();
-  }
-
-  void saveCarInfo() {
-    Map driverCarInfoMap = {
-      'car_color': carColorController.text,
-      'car_number': carNumberController.text,
-      'car_model': carModelController.text,
-      'type': selectedCarType
+  saveCarInfo()
+  {
+    Map driverCarInfoMap =
+    {
+      "car_color": carColorTextEditingController.text.trim(),
+      "car_number": carNumberTextEditingController.text.trim(),
+      "car_model": carModelTextEditingController.text.trim(),
+      "type": selectedCarType,
     };
-    DatabaseReference driversRef =
-        FirebaseDatabase.instance.ref().child('drivers');
-    driversRef
-        .child(currentFirebaseUser!.uid)
-        .child('car_details')
-        .set(driverCarInfoMap);
-    Fluttertoast.showToast(msg: 'Car info has been saved!');
-    Navigator.push(context,
-        MaterialPageRoute(builder: (context) => const MySplashScreen()));
+
+    DatabaseReference driversRef = FirebaseDatabase.instance.ref().child("drivers");
+    driversRef.child(currentFirebaseUser!.uid).child("car_details").set(driverCarInfoMap);
+
+    Fluttertoast.showToast(msg: "Car Details has been saved, Congratulations.");
+    Navigator.push(context, MaterialPageRoute(builder: (c)=> const MySplashScreen()));
   }
 
   @override
@@ -58,112 +45,162 @@ class _CarInfoScreenState extends State<CarInfoScreen> {
     return Scaffold(
       backgroundColor: Colors.black,
       body: SingleChildScrollView(
-          child: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          children: [
-            const SizedBox(
-              height: 24,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: Image.asset('images/logo1.png'),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            const Text(
-              'Write Car Details',
-              style: TextStyle(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            children: [
+
+              const SizedBox(height: 24,),
+
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Image.asset("images/logo1.png"),
+              ),
+
+              const SizedBox(height: 10,),
+
+              const Text(
+                "Write Car Details",
+                style: TextStyle(
                   fontSize: 26,
                   color: Colors.grey,
-                  fontWeight: FontWeight.bold),
-            ),
-            TextField(
-              controller: carModelController,
-              keyboardType: TextInputType.text,
-              style: const TextStyle(color: Colors.grey),
-              decoration: const InputDecoration(
-                labelText: 'Car model',
-                hintText: 'Car model',
-                enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey)),
-                focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey)),
-                hintStyle: TextStyle(color: Colors.grey, fontSize: 10),
-                labelStyle: TextStyle(color: Colors.grey, fontSize: 14),
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-            TextField(
-              controller: carNumberController,
-              keyboardType: TextInputType.text,
-              style: const TextStyle(color: Colors.grey),
-              decoration: const InputDecoration(
-                labelText: 'Car number',
-                hintText: 'Card number',
-                enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey)),
-                focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey)),
-                hintStyle: TextStyle(color: Colors.grey, fontSize: 10),
-                labelStyle: TextStyle(color: Colors.grey, fontSize: 14),
+
+              TextField(
+                controller: carModelTextEditingController,
+                style: const TextStyle(
+                    color: Colors.grey
+                ),
+                decoration: const InputDecoration(
+                  labelText: "Car Model",
+                  hintText: "Car Model",
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey),
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey),
+                  ),
+                  hintStyle: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 10,
+                  ),
+                  labelStyle: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 14,
+                  ),
+                ),
               ),
-            ),
-            TextField(
-              controller: carColorController,
-              keyboardType: TextInputType.text,
-              style: const TextStyle(color: Colors.grey),
-              decoration: const InputDecoration(
-                labelText: 'Car color',
-                hintText: 'Car color',
-                enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey)),
-                focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey)),
-                hintStyle: TextStyle(color: Colors.grey, fontSize: 10),
-                labelStyle: TextStyle(color: Colors.grey, fontSize: 14),
+
+              TextField(
+                controller: carNumberTextEditingController,
+                style: const TextStyle(
+                    color: Colors.grey
+                ),
+                decoration: const InputDecoration(
+                  labelText: "Car Number",
+                  hintText: "Car Number",
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey),
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey),
+                  ),
+                  hintStyle: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 10,
+                  ),
+                  labelStyle: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 14,
+                  ),
+                ),
               ),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            DropdownButton(
-              iconSize: 26,
-              dropdownColor: Colors.white24,
-              hint: const Text(
-                'Please choose car type',
-                style: TextStyle(fontSize: 14, color: Colors.grey),
+
+              TextField(
+                controller: carColorTextEditingController,
+                style: const TextStyle(
+                    color: Colors.grey
+                ),
+                decoration: const InputDecoration(
+                  labelText: "Car Color",
+                  hintText: "Car Color",
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey),
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey),
+                  ),
+                  hintStyle: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 10,
+                  ),
+                  labelStyle: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 14,
+                  ),
+                ),
               ),
-              items: carTypes
-                  .map((carType) => DropdownMenuItem(
-                        value: carType,
-                        child: Text(
-                          carType,
-                          style: const TextStyle(color: Colors.grey),
-                        ),
-                      ))
-                  .toList(),
-              onChanged: (String? newCarType) {
-                setState(() {
-                  selectedCarType = newCarType;
-                });
-              },
-              value: selectedCarType,
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            ElevatedButton(
-                onPressed: validateForm,
+
+              const SizedBox(height: 10,),
+
+              DropdownButton(
+                iconSize: 26,
+                dropdownColor: Colors.black,
+                hint: const Text(
+                  "Please choose Car Type",
+                  style: TextStyle(
+                    fontSize: 14.0,
+                    color: Colors.grey,
+                  ),
+                ),
+                value: selectedCarType,
+                onChanged: (newValue)
+                {
+                  setState(() {
+                    selectedCarType = newValue.toString();
+                  });
+                },
+                items: carTypesList.map((car){
+                  return DropdownMenuItem(
+                    child: Text(
+                      car,
+                      style: const TextStyle(color: Colors.grey),
+                    ),
+                    value: car,
+                  );
+                }).toList(),
+              ),
+
+              const SizedBox(height: 20,),
+
+              ElevatedButton(
+                onPressed: ()
+                {
+                  if(carColorTextEditingController.text.isNotEmpty
+                      && carNumberTextEditingController.text.isNotEmpty
+                      && carModelTextEditingController.text.isNotEmpty && selectedCarType != null)
+                  {
+                    saveCarInfo();
+                  }
+                },
                 style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.lightGreenAccent),
+                  primary: Colors.lightGreenAccent,
+                ),
                 child: const Text(
-                  'Save',
-                  style: TextStyle(color: Colors.black54, fontSize: 18),
-                ))
-          ],
+                  "Save Now",
+                  style: TextStyle(
+                    color: Colors.black54,
+                    fontSize: 18,
+                  ),
+                ),
+              ),
+
+            ],
+          ),
         ),
-      )),
+      ),
     );
   }
 }
