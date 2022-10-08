@@ -8,11 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-
-
-class NotificationDialogBox extends StatefulWidget
-{
-  UserRideRequestInformation? userRideRequestDetails;
+class NotificationDialogBox extends StatefulWidget {
+  final UserRideRequestInformation? userRideRequestDetails;
 
   NotificationDialogBox({this.userRideRequestDetails});
 
@@ -20,14 +17,9 @@ class NotificationDialogBox extends StatefulWidget
   State<NotificationDialogBox> createState() => _NotificationDialogBoxState();
 }
 
-
-
-
-class _NotificationDialogBoxState extends State<NotificationDialogBox>
-{
+class _NotificationDialogBoxState extends State<NotificationDialogBox> {
   @override
-  Widget build(BuildContext context) 
-  {
+  Widget build(BuildContext context) {
     return Dialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(24),
@@ -44,24 +36,26 @@ class _NotificationDialogBoxState extends State<NotificationDialogBox>
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-
-            const SizedBox(height: 14,),
+            const SizedBox(
+              height: 14,
+            ),
 
             Image.asset(
               "images/car_logo.png",
               width: 160,
             ),
 
-            const SizedBox(height: 10,),
+            const SizedBox(
+              height: 10,
+            ),
 
             //title
             const Text(
               "New Ride Request",
               style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 22,
-                color: Colors.grey
-              ),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 22,
+                  color: Colors.grey),
             ),
 
             const SizedBox(height: 14.0),
@@ -84,7 +78,9 @@ class _NotificationDialogBoxState extends State<NotificationDialogBox>
                         width: 30,
                         height: 30,
                       ),
-                      const SizedBox(width: 14,),
+                      const SizedBox(
+                        width: 14,
+                      ),
                       Expanded(
                         child: Container(
                           child: Text(
@@ -109,7 +105,9 @@ class _NotificationDialogBoxState extends State<NotificationDialogBox>
                         width: 30,
                         height: 30,
                       ),
-                      const SizedBox(width: 14,),
+                      const SizedBox(
+                        width: 14,
+                      ),
                       Expanded(
                         child: Container(
                           child: Text(
@@ -127,7 +125,6 @@ class _NotificationDialogBoxState extends State<NotificationDialogBox>
               ),
             ),
 
-
             const Divider(
               height: 3,
               thickness: 3,
@@ -141,40 +138,42 @@ class _NotificationDialogBoxState extends State<NotificationDialogBox>
                 children: [
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      primary: Colors.red,
+                      backgroundColor: Colors.red,
                     ),
-                    onPressed: ()
-                    {
+                    onPressed: () {
                       audioPlayer.pause();
                       audioPlayer.stop();
                       audioPlayer = AssetsAudioPlayer();
 
                       //cancel the rideRequest
-                      FirebaseDatabase.instance.ref()
+                      FirebaseDatabase.instance
+                          .ref()
                           .child("All Ride Requests")
                           .child(widget.userRideRequestDetails!.rideRequestId!)
-                          .remove().then((value)
-                      {
-                        FirebaseDatabase.instance.ref()
+                          .remove()
+                          .then((value) {
+                        FirebaseDatabase.instance
+                            .ref()
                             .child("drivers")
                             .child(currentFirebaseUser!.uid)
                             .child("newRideStatus")
                             .set("idle");
-                      }).then((value)
-                      {
-                        FirebaseDatabase.instance.ref()
+                      }).then((value) {
+                        FirebaseDatabase.instance
+                            .ref()
                             .child("drivers")
                             .child(currentFirebaseUser!.uid)
                             .child("tripsHistory")
-                            .child(widget.userRideRequestDetails!.rideRequestId!)
+                            .child(
+                                widget.userRideRequestDetails!.rideRequestId!)
                             .remove();
-                      }).then((value)
-                      {
-                        Fluttertoast.showToast(msg: "Ride Request has been Cancelled, Successfully. Restart App Now.");
+                      }).then((value) {
+                        Fluttertoast.showToast(
+                            msg:
+                                "Ride Request has been Cancelled, Successfully. Restart App Now.");
                       });
 
-                      Future.delayed(const Duration(milliseconds: 3000), ()
-                      {
+                      Future.delayed(const Duration(milliseconds: 3000), () {
                         SystemNavigator.pop();
                       });
                     },
@@ -185,15 +184,12 @@ class _NotificationDialogBoxState extends State<NotificationDialogBox>
                       ),
                     ),
                   ),
-
                   const SizedBox(width: 25.0),
-
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      primary: Colors.green,
+                      backgroundColor: Colors.green,
                     ),
-                    onPressed: ()
-                    {
+                    onPressed: () {
                       audioPlayer.pause();
                       audioPlayer.stop();
                       audioPlayer = AssetsAudioPlayer();
@@ -211,35 +207,30 @@ class _NotificationDialogBoxState extends State<NotificationDialogBox>
                 ],
               ),
             ),
-
           ],
         ),
       ),
     );
   }
 
-  acceptRideRequest(BuildContext context)
-  {
-    String getRideRequestId="";
-    FirebaseDatabase.instance.ref()
+  acceptRideRequest(BuildContext context) {
+    String getRideRequestId = "";
+    FirebaseDatabase.instance
+        .ref()
         .child("drivers")
         .child(currentFirebaseUser!.uid)
         .child("newRideStatus")
         .once()
-        .then((snap)
-    {
-      if(snap.snapshot.value != null)
-      {
+        .then((snap) {
+      if (snap.snapshot.value != null) {
         getRideRequestId = snap.snapshot.value.toString();
-      }
-      else
-      {
+      } else {
         Fluttertoast.showToast(msg: "This ride request do not exists.");
       }
 
-      if(getRideRequestId == widget.userRideRequestDetails!.rideRequestId)
-      {
-        FirebaseDatabase.instance.ref()
+      if (getRideRequestId == widget.userRideRequestDetails!.rideRequestId) {
+        FirebaseDatabase.instance
+            .ref()
             .child("drivers")
             .child(currentFirebaseUser!.uid)
             .child("newRideStatus")
@@ -248,12 +239,13 @@ class _NotificationDialogBoxState extends State<NotificationDialogBox>
         AssistantMethods.pauseLiveLocationUpdates();
 
         //trip started now - send driver to new tripScreen
-        Navigator.push(context, MaterialPageRoute(builder: (c)=> NewTripScreen(
-            userRideRequestDetails: widget.userRideRequestDetails,
-        )));
-      }
-      else
-      {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (c) => NewTripScreen(
+                      userRideRequestDetails: widget.userRideRequestDetails,
+                    )));
+      } else {
         Fluttertoast.showToast(msg: "This Ride Request do not exists.");
       }
     });

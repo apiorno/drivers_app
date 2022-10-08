@@ -1,75 +1,57 @@
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_star_rating_nsafe/smooth_star_rating.dart';
 
 import '../global/global.dart';
 import '../infoHandler/app_info.dart';
 
-
-
-class RatingsTabPage extends StatefulWidget
-{
+class RatingsTabPage extends StatefulWidget {
   const RatingsTabPage({Key? key}) : super(key: key);
 
   @override
   State<RatingsTabPage> createState() => _RatingsTabPageState();
 }
 
-
-
-
-class _RatingsTabPageState extends State<RatingsTabPage>
-{
-  double ratingsNumber=0;
+class _RatingsTabPageState extends State<RatingsTabPage> {
+  double ratingsNumber = 0;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-
     getRatingsNumber();
   }
 
-  getRatingsNumber()
-  {
+  getRatingsNumber() {
     setState(() {
-      ratingsNumber = double.parse(Provider.of<AppInfo>(context, listen: false).driverAverageRatings);
+      ratingsNumber = double.parse(
+          Provider.of<AppInfo>(context, listen: false).driverAverageRatings);
     });
 
     setupRatingsTitle();
   }
 
-  setupRatingsTitle()
-  {
-    if(ratingsNumber == 1)
-    {
+  setupRatingsTitle() {
+    if (ratingsNumber == 1) {
       setState(() {
         titleStarsRating = "Very Bad";
       });
     }
-    if(ratingsNumber == 2)
-    {
+    if (ratingsNumber == 2) {
       setState(() {
         titleStarsRating = "Bad";
       });
     }
-    if(ratingsNumber == 3)
-    {
+    if (ratingsNumber == 3) {
       setState(() {
         titleStarsRating = "Good";
       });
     }
-    if(ratingsNumber == 4)
-    {
+    if (ratingsNumber == 4) {
       setState(() {
         titleStarsRating = "Very Good";
       });
     }
-    if(ratingsNumber == 5)
-    {
+    if (ratingsNumber == 5) {
       setState(() {
         titleStarsRating = "Excellent";
       });
@@ -77,8 +59,7 @@ class _RatingsTabPageState extends State<RatingsTabPage>
   }
 
   @override
-  Widget build(BuildContext context)
-  {
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
       body: Dialog(
@@ -96,9 +77,9 @@ class _RatingsTabPageState extends State<RatingsTabPage>
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-
-              const SizedBox(height: 22.0,),
-
+              const SizedBox(
+                height: 22.0,
+              ),
               const Text(
                 "your Ratings:",
                 style: TextStyle(
@@ -108,13 +89,16 @@ class _RatingsTabPageState extends State<RatingsTabPage>
                   color: Colors.black54,
                 ),
               ),
-
-              const SizedBox(height: 22.0,),
-
-              const Divider(height: 4.0, thickness: 4.0,),
-
-              const SizedBox(height: 22.0,),
-
+              const SizedBox(
+                height: 22.0,
+              ),
+              const Divider(
+                height: 4.0,
+                thickness: 4.0,
+              ),
+              const SizedBox(
+                height: 22.0,
+              ),
               SmoothStarRating(
                 rating: ratingsNumber,
                 allowHalfRating: false,
@@ -123,9 +107,9 @@ class _RatingsTabPageState extends State<RatingsTabPage>
                 borderColor: Colors.green,
                 size: 46,
               ),
-
-              const SizedBox(height: 12.0,),
-
+              const SizedBox(
+                height: 12.0,
+              ),
               Text(
                 titleStarsRating,
                 style: const TextStyle(
@@ -134,9 +118,9 @@ class _RatingsTabPageState extends State<RatingsTabPage>
                   color: Colors.green,
                 ),
               ),
-
-              const SizedBox(height: 18.0,),
-
+              const SizedBox(
+                height: 18.0,
+              ),
             ],
           ),
         ),

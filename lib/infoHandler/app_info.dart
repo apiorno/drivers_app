@@ -1,12 +1,12 @@
 import 'package:flutter/cupertino.dart';
-import 'package:users_app/models/directions.dart';
-import 'package:users_app/models/trips_history_model.dart';
+import 'package:drivers_app/models/directions.dart';
+import 'package:drivers_app/models/trips_history_model.dart';
 
 class AppInfo extends ChangeNotifier {
   Directions? userPickUpLocation, userDropOffLocation;
   int countTotalTrips = 0;
-  Stirng driverTotalEarnings = '0';
-  Stirng driverAverageRatings = '0';
+  String driverTotalEarnings = '0';
+  String driverAverageRatings = '0';
   List<String> historyTripsKeysList = [];
   List<TripsHistoryModel> allTripsHistoryInformationList = [];
 

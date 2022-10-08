@@ -1,9 +1,7 @@
 import 'dart:async';
 import 'package:drivers_app/assistants/assistant_methods.dart';
 import 'package:drivers_app/global/global.dart';
-import 'package:drivers_app/main.dart';
 import 'package:drivers_app/push_notifications/push_notification_system.dart';
-import 'package:drivers_app/splashScreen/splash_screen.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -76,19 +74,19 @@ class _HomeTabPageState extends State<HomeTabPage> {
         onlineDriverData.name = (snap.snapshot.value as Map)["name"];
         onlineDriverData.phone = (snap.snapshot.value as Map)["phone"];
         onlineDriverData.email = (snap.snapshot.value as Map)["email"];
-        onlineDriverData.car_color =
+        onlineDriverData.carColor =
             (snap.snapshot.value as Map)["car_details"]["car_color"];
-        onlineDriverData.car_model =
+        onlineDriverData.carModel =
             (snap.snapshot.value as Map)["car_details"]["car_model"];
-        onlineDriverData.car_number =
+        onlineDriverData.carNumber =
             (snap.snapshot.value as Map)["car_details"]["car_number"];
 
         driverVehicleType = (snap.snapshot.value as Map)["car_details"]["type"];
 
         print("Car Details :: ");
-        print(onlineDriverData.car_color);
-        print(onlineDriverData.car_model);
-        print(onlineDriverData.car_number);
+        print(onlineDriverData.carColor);
+        print(onlineDriverData.carModel);
+        print(onlineDriverData.carNumber);
       }
     });
 
@@ -173,7 +171,7 @@ class _HomeTabPageState extends State<HomeTabPage> {
                   }
                 },
                 style: ElevatedButton.styleFrom(
-                  primary: buttonColor,
+                  backgroundColor: buttonColor,
                   padding: const EdgeInsets.symmetric(horizontal: 18),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(26),

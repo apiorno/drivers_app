@@ -4,27 +4,22 @@ import 'package:flutter/services.dart';
 
 import '../widgets/info_design_ui.dart';
 
-
-class ProfileTabPage extends StatefulWidget
-{
+class ProfileTabPage extends StatefulWidget {
   const ProfileTabPage({Key? key}) : super(key: key);
 
   @override
   State<ProfileTabPage> createState() => _ProfileTabPageState();
 }
 
-class _ProfileTabPageState extends State<ProfileTabPage>
-{
+class _ProfileTabPageState extends State<ProfileTabPage> {
   @override
-  Widget build(BuildContext context)
-  {
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
       body: SafeArea(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-
             //name
             Text(
               onlineDriverData.name!,
@@ -35,9 +30,8 @@ class _ProfileTabPageState extends State<ProfileTabPage>
               ),
             ),
 
-
             Text(
-               titleStarsRating + " driver",
+              titleStarsRating + " driver",
               style: const TextStyle(
                 fontSize: 18.0,
                 color: Colors.grey,
@@ -55,7 +49,9 @@ class _ProfileTabPageState extends State<ProfileTabPage>
               ),
             ),
 
-            const SizedBox(height: 38.0,),
+            const SizedBox(
+              height: 38.0,
+            ),
 
             //phone
             InfoDesignUIWidget(
@@ -70,7 +66,11 @@ class _ProfileTabPageState extends State<ProfileTabPage>
             ),
 
             InfoDesignUIWidget(
-              textInfo: onlineDriverData.car_color! + " " + onlineDriverData.car_model! + " " +  onlineDriverData.car_number!,
+              textInfo: onlineDriverData.carColor! +
+                  " " +
+                  onlineDriverData.carModel! +
+                  " " +
+                  onlineDriverData.carNumber!,
               iconData: Icons.car_repair,
             ),
 
@@ -79,20 +79,18 @@ class _ProfileTabPageState extends State<ProfileTabPage>
             ),
 
             ElevatedButton(
-              onPressed: ()
-              {
+              onPressed: () {
                 fAuth.signOut();
                 SystemNavigator.pop();
               },
               style: ElevatedButton.styleFrom(
-                primary: Colors.redAccent,
+                backgroundColor: Colors.redAccent,
               ),
               child: const Text(
                 "Logout",
                 style: TextStyle(color: Colors.white),
               ),
             )
-
           ],
         ),
       ),

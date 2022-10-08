@@ -4,7 +4,6 @@ import 'package:drivers_app/global/map_key.dart';
 import 'package:drivers_app/infoHandler/app_info.dart';
 import 'package:drivers_app/models/direction_details_info.dart';
 import 'package:drivers_app/models/directions.dart';
-import 'package:drivers_app/models/user_model.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:geolocator/geolocator.dart';
@@ -51,17 +50,17 @@ class AssistantMethods {
     }
 
     DirectionDetailsInfo directionDetailsInfo = DirectionDetailsInfo();
-    directionDetailsInfo.e_points =
+    directionDetailsInfo.ePoints =
         responseDirectionApi["routes"][0]["overview_polyline"]["points"];
 
-    directionDetailsInfo.distance_text =
+    directionDetailsInfo.distanceText =
         responseDirectionApi["routes"][0]["legs"][0]["distance"]["text"];
-    directionDetailsInfo.distance_value =
+    directionDetailsInfo.distanceValue =
         responseDirectionApi["routes"][0]["legs"][0]["distance"]["value"];
 
-    directionDetailsInfo.duration_text =
+    directionDetailsInfo.durationText =
         responseDirectionApi["routes"][0]["legs"][0]["duration"]["text"];
-    directionDetailsInfo.duration_value =
+    directionDetailsInfo.durationValue =
         responseDirectionApi["routes"][0]["legs"][0]["duration"]["value"];
 
     return directionDetailsInfo;
@@ -81,9 +80,9 @@ class AssistantMethods {
   static double calculateFareAmountFromOriginToDestination(
       DirectionDetailsInfo directionDetailsInfo) {
     double timeTraveledFareAmountPerMinute =
-        (directionDetailsInfo.duration_value! / 60) * 0.1;
+        (directionDetailsInfo.durationValue! / 60) * 0.1;
     double distanceTraveledFareAmountPerKilometer =
-        (directionDetailsInfo.duration_value! / 1000) * 0.1;
+        (directionDetailsInfo.durationValue! / 1000) * 0.1;
 
     //USD
     double totalFareAmount = timeTraveledFareAmountPerMinute +
